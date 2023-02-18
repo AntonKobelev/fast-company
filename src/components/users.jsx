@@ -1,10 +1,12 @@
 import React from "react";
+import Pagination from "./pagination";
 import User from "./user";
 
 
 const Users = ({users, ...rest}) => {
   // return html
   return (
+    <>
       <table className="table">
         {/*create head table*/}
         <thead>
@@ -25,6 +27,9 @@ const Users = ({users, ...rest}) => {
               ))}
         </tbody>
       </table>
+      <Pagination itemsCount />
+
+    </>
   );
 };
 
