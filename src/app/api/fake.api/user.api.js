@@ -1,4 +1,5 @@
-import { professions } from "./professions.api";
+// импортируем объект professionsObject из professions.api
+import { professionsObject as professions } from "./professions.api";
 
 const qualities = {
     tedious: {
@@ -33,11 +34,14 @@ const qualities = {
     }
 };
 
-const users = [
+// создаем массив с объектами users
+export const users = [
     {
         _id: "67rdca3eeb7f6fgeed471815",
         name: "Джон Дориан",
+        // значение поля profession ссылается на professions.api.js
         profession: professions.doctor,
+        // значением поля qualities является массив, в котором есть 3 элемента, элемент представляет собой обращение к объекту qualities по выбранным полям, значением выбранных полей являются объекты
         qualities: [qualities.tedious, qualities.uncertain, qualities.strange],
         completedMeetings: 36,
         rate: 2.5,
@@ -143,6 +147,16 @@ const users = [
         bookmark: false
     }
 ];
-export function fetchAll() {
-    return users;
-}
+
+// создаем функцию fetchAll(Извлекать всё) и она будет возвращать новый Промис (Обещает вернуть массив users) resolve (разрешает)
+const fetchAll = () =>
+    new Promise((resolve) => {
+        window.setTimeout(function () {
+            resolve(users);
+        }, 2000);
+    });
+
+// экспортируем функцию fetchAll (Извлекаем всех пользователей)
+export default {
+    fetchAll
+};
