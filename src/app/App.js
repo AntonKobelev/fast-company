@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Users from "./components/users";
 import api from "./api";
 
 // главный компонент приложения App
 function App() {
     // создаем хук useState для хранения состояния users, в качестве начального значения установим значение из index.js, в объекте API вызываем поле users - это user.api.js и из этого файла вызывается функция fetchAll() (извлечь всё - возращаем промис с юзерами)
-    const [users, setUsers] = useState(api.users.fetchAll());
+    const [users, setUsers] = useState();
+
+    useEffect(() => {
+        api.users.fetchAll().then((data) => setUsers(data));
+    }, []);
 
     // создаем функцию handleDelete (обработка удаления) передаем туда user Id
     const handleDelete = (userId) => {
@@ -33,11 +37,13 @@ function App() {
     return (
         <div>
             {/* помещаем компонент Users, который принимает 3 свойства. onDelete и onToggleMark - это функции обратного вызова (- функция, которая передается в качестве аргумента другой функции и будет вызвана позже в процессе выполнения) они обработчики событий. Они будут вызываться, когда пользователь захочет удалить пользователя, или добавить закладку. users - это массив объектов, который мы передаем в компонент Users в качестве свойства */}
-            <Users
-                onDelete={handleDelete}
-                onToggleBookMark={handleToggleBookMark}
-                users={users}
-            />
+            {users && (
+                <Users
+                    onDelete={handleDelete}
+                    onToggleBookMark={handleToggleBookMark}
+                    users={users}
+                />
+            )}
         </div>
     );
 }

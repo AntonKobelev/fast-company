@@ -9,6 +9,7 @@ import SearchStatus from "./searchStatus";
 
 // создаем компонент Users - Юзеры и передаем туда свойства т.е. юзеров, а также ...rest - это сбор всех оставшихся аргументов в массив
 const Users = ({ users, ...rest }) => {
+    console.log(users);
     // создаем хук юзстэйт для хранения состояния текущей страницы и задаем начальное значение 1
     const [currentPage, setCurrentPage] = useState(1);
     // создаем хук юзстейт для хранения профессий, там сейчас ничего нет
@@ -16,7 +17,7 @@ const Users = ({ users, ...rest }) => {
     // создаем хук юзстейт для хранения выбранной профессии, там сейчас ничего нет
     const [selectedProf, setSelectedProf] = useState();
     // создаем переменную pageSize размер страницы, присваиваем размер 2
-    const pageSize = 2;
+    const pageSize = 4;
 
     // тут мы используем хук useEffect, данный хук вызывает функцию обратного вызова, каждый раз, когда компонент отрисовывается. Хук useEffect используется для получения списка профессий с помощью API и установки полученных данных в переменную professions. Т.е. useEffect будет вызван один раз, так как пустой массив [] не содержит зависимостей.
     useEffect(() => {
@@ -40,11 +41,9 @@ const Users = ({ users, ...rest }) => {
     };
     // создаем функцию фильтрация пользователей
     // фильтруем массив объектов при помощи функции filter, функция обратного вызова принимает user в качестве аргумента и проверяет является ли свойство profession равное значению переменной selectedProf, т.е. ту профессию, которую выбрал пользователь
-    const filteredUsers = Array.isArray(users)
-        ? users.filter((user) => user.profession === selectedProf)
-        : Object.values(users).filter(
-              (user) => user.profession === selectedProf
-          );
+    const filteredUsers = selectedProf
+        ? users.filter((user) => user.profession._id === selectedProf._id)
+        : users;
 
     //  создаем переменную - длина отфильтрованного списка юзеров
     const count = filteredUsers.length;
@@ -71,7 +70,6 @@ const Users = ({ users, ...rest }) => {
     return (
         // создаем общую обертку
         <div className="d-flex">
-            {/* если переменная professions не пустая создаем первый блок*/}
             {professions && (
                 // создаем обертку для компонента GroupList и кнопки очистить
                 <div className="d-flex flex-column flex-shrink-0 p-3">
@@ -93,16 +91,13 @@ const Users = ({ users, ...rest }) => {
                     </button>
                 </div>
             )}
-            {/* создаем второй блок*/}
             <div className="d-flex flex-column">
-                {/* помещаем туда компонент SearchStatus и передаем туда пропс длину отфильтрованного списка юзеров*/}
                 <SearchStatus length={count} />
                 {/* если count > 0 то создаем таблицу */}
                 {count > 0 && (
                     <table className="table">
                         {/* создаем заголовок таблицы */}
                         <thead>
-                            {/* создаем строку с заголовками*/}
                             <tr>
                                 <th scope="col">Имя</th>
                                 <th scope="col">Качества</th>
@@ -114,7 +109,6 @@ const Users = ({ users, ...rest }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {/* внутри таблицы создаем строки. Пробегаемся по каждому элементу обрезанного массива userCrop. Функция map вернет новый массив, каждый элемент которого будет заменен компонентом User*/}
                             {userCrop.map((user) => (
                                 // помещаем компонент User и передаем туда пропсы. Передаем пропс key для того, чтобы react отслеживал каждый компонент User. Передаем спред-операторы {...rest} - мы расширяем объект rest и передаем его свойства в компонент User например функции обратного вызова и {...user} - мы расширяем объект user и передаем его свойства в компонент User например имя, фамилию и.т.д.
                                 <User key={user._id} {...rest} {...user} />
