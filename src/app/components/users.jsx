@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "./pagination";
-import User from "./user";
 import { paginate } from "../utils/paginate";
 import PropTypes from "prop-types";
 import GroupList from "./groupList";
 import api from "../api";
 import SearchStatus from "./searchStatus";
+import UserTable from "./usersTable";
 
 // Cоздаем компонент Users - Юзеры и передаем туда свойства т.е. юзеров, а также ...rest - это сбор всех оставшихся аргументов в массив
 const Users = ({ users, ...rest }) => {
@@ -94,28 +94,7 @@ const Users = ({ users, ...rest }) => {
             <div className="d-flex flex-column">
                 <SearchStatus length={count} />
                 {/* если count > 0 то создаем таблицу */}
-                {count > 0 && (
-                    <table className="table">
-                        {/* создаем заголовок таблицы */}
-                        <thead>
-                            <tr>
-                                <th scope="col">Имя</th>
-                                <th scope="col">Качества</th>
-                                <th scope="col">Профессия</th>
-                                <th scope="col">Встретился, раз</th>
-                                <th scope="col">Оценка</th>
-                                <th scope="col">Избранное</th>
-                                <th />
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {userCrop.map((user) => (
-                                // помещаем компонент User и передаем туда пропсы. Передаем пропс key для того, чтобы react отслеживал каждый компонент User. Передаем спред-операторы {...rest} - мы расширяем объект rest и передаем его свойства в компонент User например функции обратного вызова и {...user} - мы расширяем объект user и передаем его свойства в компонент User например имя, фамилию и.т.д.
-                                <User key={user._id} {...rest} {...user} />
-                            ))}
-                        </tbody>
-                    </table>
-                )}
+                {count > 0 && <UserTable users={userCrop} {...rest} />}
                 {/* создаем обертку для компонента Пагинация */}
                 <div className="d-flex justify-content-center">
                     {/* помещаем туда компонент Пагинация */}
