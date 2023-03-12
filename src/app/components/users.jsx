@@ -6,18 +6,21 @@ import GroupList from "./groupList";
 import api from "../api";
 import SearchStatus from "./searchStatus";
 import UserTable from "./usersTable";
+import _ from "lodash";
 
 // Cоздаем компонент Users - Юзеры и передаем туда свойства т.е. юзеров, а также ...rest - это сбор всех оставшихся аргументов в массив
 const Users = ({ users, ...rest }) => {
-    console.log(users);
     // создаем хук юзстэйт для хранения состояния текущей страницы и задаем начальное значение 1
     const [currentPage, setCurrentPage] = useState(1);
     // создаем хук юзстейт для хранения профессий, там сейчас ничего нет
     const [professions, setProfession] = useState();
     // создаем хук юзстейт для хранения выбранной профессии, там сейчас ничего нет
     const [selectedProf, setSelectedProf] = useState();
+    // создаем хук юзстейт для хранения состояния отсортированного массива пользователей и передаем по умолчанию объект с ключами: сортировка по имени и по возрастанию
+    const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
+
     // создаем переменную pageSize размер страницы, присваиваем размер 2
-    const pageSize = 4;
+    const pageSize = 8;
 
     // тут мы используем хук useEffect, данный хук вызывает функцию обратного вызова, каждый раз, когда компонент отрисовывается. Хук useEffect используется для получения списка профессий с помощью API и установки полученных данных в переменную professions. Т.е. useEffect будет вызван один раз, так как пустой массив [] не содержит зависимостей.
     useEffect(() => {
@@ -39,6 +42,20 @@ const Users = ({ users, ...rest }) => {
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
+
+    // создаем обработчик нажатия на заголовок колонок, он принимает в себя аргумент, т.е. что мы будем обрабатывать и выводим в консоль на то что мы нажали в колонке
+    const handleSort = (item) => {
+        console.log("sortBy", sortBy);
+        if (sortBy.iter === item) {
+            setSortBy((prevState) => ({
+                ...prevState,
+                order: prevState.order === "asc" ? "desc" : "asc"
+            }));
+        } else {
+            setSortBy({ iter: item, order: "asc" });
+        }
+    };
+
     // создаем функцию фильтрация пользователей
     // фильтруем массив объектов при помощи функции filter, функция обратного вызова принимает user в качестве аргумента и проверяет является ли свойство profession равное значению переменной selectedProf, т.е. ту профессию, которую выбрал пользователь
     const filteredUsers = selectedProf
@@ -48,8 +65,11 @@ const Users = ({ users, ...rest }) => {
     //  создаем переменную - длина отфильтрованного списка юзеров
     const count = filteredUsers.length;
 
+    // создаем переменную - отсортированные пользователи, для сортировки используем библиотеку lodash, 1ый параметр это отфильтрованные пользователи, второй параметр это имя пользователя, третий параметр это сортировка по возрастанию
+    const usersSort = _.orderBy(filteredUsers, [sortBy.iter], [sortBy.order]);
+
     // создаем переменную обрезка пользователей, помещаем туда функцию, куда передаются отфильтрованные пользователи (массив), текущая страница, размер страницы
-    const userCrop = paginate(filteredUsers, currentPage, pageSize);
+    const userCrop = paginate(usersSort, currentPage, pageSize);
 
     // создаем хук useEffect
     useEffect(() => {
@@ -94,7 +114,9 @@ const Users = ({ users, ...rest }) => {
             <div className="d-flex flex-column">
                 <SearchStatus length={count} />
                 {/* если count > 0 то создаем таблицу */}
-                {count > 0 && <UserTable users={userCrop} {...rest} />}
+                {count > 0 && (
+                    <UserTable users={userCrop} onSort={handleSort} {...rest} />
+                )}
                 {/* создаем обертку для компонента Пагинация */}
                 <div className="d-flex justify-content-center">
                     {/* помещаем туда компонент Пагинация */}

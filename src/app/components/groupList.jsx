@@ -9,8 +9,6 @@ const GroupList = ({
     onItemSelect,
     selectedItem
 }) => {
-    console.log("items", items);
-    console.log("selectedItem", selectedItem);
     // создаем JSX - разметку
     return (
         // создаем тег unordered-list
