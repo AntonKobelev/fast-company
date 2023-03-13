@@ -45,15 +45,7 @@ const Users = ({ users, ...rest }) => {
 
     // создаем обработчик нажатия на заголовок колонок, он принимает в себя аргумент, т.е. что мы будем обрабатывать и выводим в консоль на то что мы нажали в колонке
     const handleSort = (item) => {
-        console.log("sortBy", sortBy);
-        if (sortBy.iter === item) {
-            setSortBy((prevState) => ({
-                ...prevState,
-                order: prevState.order === "asc" ? "desc" : "asc"
-            }));
-        } else {
-            setSortBy({ iter: item, order: "asc" });
-        }
+        setSortBy(item);
     };
 
     // создаем функцию фильтрация пользователей
@@ -115,7 +107,12 @@ const Users = ({ users, ...rest }) => {
                 <SearchStatus length={count} />
                 {/* если count > 0 то создаем таблицу */}
                 {count > 0 && (
-                    <UserTable users={userCrop} onSort={handleSort} {...rest} />
+                    <UserTable
+                        users={userCrop}
+                        onSort={handleSort}
+                        selectedSort={sortBy}
+                        {...rest}
+                    />
                 )}
                 {/* создаем обертку для компонента Пагинация */}
                 <div className="d-flex justify-content-center">
