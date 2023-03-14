@@ -17,7 +17,7 @@ const Users = ({ users, ...rest }) => {
     // создаем хук юзстейт для хранения выбранной профессии, там сейчас ничего нет
     const [selectedProf, setSelectedProf] = useState();
     // создаем хук юзстейт для хранения состояния отсортированного массива пользователей и передаем по умолчанию объект с ключами: сортировка по имени и по возрастанию
-    const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
+    const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
 
     // создаем переменную pageSize размер страницы, присваиваем размер 2
     const pageSize = 8;
@@ -58,7 +58,7 @@ const Users = ({ users, ...rest }) => {
     const count = filteredUsers.length;
 
     // создаем переменную - отсортированные пользователи, для сортировки используем библиотеку lodash, 1ый параметр это отфильтрованные пользователи, второй параметр это имя пользователя, третий параметр это сортировка по возрастанию
-    const usersSort = _.orderBy(filteredUsers, [sortBy.iter], [sortBy.order]);
+    const usersSort = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
 
     // создаем переменную обрезка пользователей, помещаем туда функцию, куда передаются отфильтрованные пользователи (массив), текущая страница, размер страницы
     const userCrop = paginate(usersSort, currentPage, pageSize);
