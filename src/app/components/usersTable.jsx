@@ -3,8 +3,16 @@ import React from "react";
 import PropTypes from "prop-types";
 import TableHeader from "./tableHeader";
 import TableBody from "./tableBody";
+import BookMark from "./bookmark";
 
-const UserTable = ({ users, onSort, selectedSort, ...rest }) => {
+const UserTable = ({
+    users,
+    onSort,
+    selectedSort,
+    onToggleBookMark,
+    onDelete,
+    ...rest
+}) => {
     const columns = {
         name: { path: "name", name: "Имя" },
         qualities: { name: "Качества" },
@@ -17,9 +25,26 @@ const UserTable = ({ users, onSort, selectedSort, ...rest }) => {
         bookmark: {
             path: "bookmark",
             name: "Избранное",
-            component: "bookmark"
+            component: (user) => (
+                <BookMark
+                    // передаем через свойство status состояние закладки true или false
+                    status={user.bookmark}
+                    // передаем через свойство onClick колбэк-функцию, в этой функции происходит вызов другой функции - Переключение закладки, при этом она принимает в себя идентификатор
+                    onClick={() => onToggleBookMark(user._id)}
+                />
+            )
         },
-        delete: { component: "delete" }
+        delete: {
+            component: (user) => (
+                <button
+                    // присваиваем атрибуту onClick функцию обратного вызова, которая вызвает функцию onDelete и передаем туда параметр _id
+                    onClick={() => onDelete(user._id)}
+                    className="btn btn-danger"
+                >
+                    delete
+                </button>
+            )
+        }
     };
     return (
         <table className="table">
@@ -38,7 +63,9 @@ const UserTable = ({ users, onSort, selectedSort, ...rest }) => {
 UserTable.propTypes = {
     users: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     onSort: PropTypes.func.isRequired,
-    selectedSort: PropTypes.object.isRequired
+    selectedSort: PropTypes.object.isRequired,
+    onToggleBookMark: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired
 };
 
 export default UserTable;
