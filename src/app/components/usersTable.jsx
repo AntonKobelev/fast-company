@@ -14,8 +14,12 @@ const UserTable = ({ users, onSort, selectedSort, ...rest }) => {
             name: "Встретился, раз"
         },
         rate: { path: "rate", name: "Оценка" },
-        bookmark: { path: "bookmark", name: "Избранное" },
-        delete: {}
+        bookmark: {
+            path: "bookmark",
+            name: "Избранное",
+            component: "bookmark"
+        },
+        delete: { component: "delete" }
     };
     return (
         <table className="table">
