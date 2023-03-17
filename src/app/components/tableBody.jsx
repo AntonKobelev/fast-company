@@ -27,8 +27,7 @@ const TableBody = ({ data, columns }) => {
 
 TableBody.propTypes = {
     data: PropTypes.array.isRequired,
-    columns: PropTypes.object.isRequired,
-    onToggleBookMark: PropTypes.func.isRequired
+    columns: PropTypes.object.isRequired
 };
 
 export default TableBody;

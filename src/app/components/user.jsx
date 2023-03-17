@@ -2,6 +2,7 @@ import React from "react";
 import Qualitie from "./qualitie";
 import BookMark from "./bookmark";
 import PropTypes from "prop-types";
+import QualitiesList from "./qualitiesList";
 
 // делаем деструктуризацию объекта для передачи свойств в компонент
 const User = ({
@@ -25,9 +26,6 @@ const User = ({
             <td>
                 {/* проходим по массиву qualities, метод map возыращает новый
                 массив, каждый элемент которого мы заменим на компонент Qualitie, куда передаем ключ чтобы React смог отслеживать каждый компонент и с помощью. Передаем спред оператор для расширения объекта qual и передаем его свойства в компонент Qualitie */}
-                {qualities.map((qual) => (
-                    <Qualitie key={qual._id} {...qual} />
-                ))}
             </td>
             {/* создаем ячейку профессии */}
             <td>{profession.name}</td>
