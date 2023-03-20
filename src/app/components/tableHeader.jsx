@@ -4,7 +4,7 @@ import Arrows from "./arrows";
 
 const TableHeader = ({ onSort, selectedSort, columns }) => {
     // создаем функцию сортировки элементов в столбце и передаем туда аргумент по которому будем сортировать
-    const handleSort = (item, column) => {
+    const handleSort = (item) => {
         if (selectedSort.path === item) {
             onSort(() => ({
                 ...selectedSort,
