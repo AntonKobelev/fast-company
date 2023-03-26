@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 
 // передаем данные (делаем универсально, так как могут быть и юзеры и другая информация) - т.е. data - это массив, а columns - это объект
 const TableBody = ({ data, columns }) => {
@@ -8,8 +9,11 @@ const TableBody = ({ data, columns }) => {
         const component = columns[column].component;
         if (typeof component === "function") {
             return component(item);
+        } else if (column === "name") {
+            return <Link to={`users/${item._id}`}>{item.name}</Link>;
+        } else {
+            return _.get(item, columns[column].path);
         }
-        return _.get(item, columns[column].path);
     };
 
     return (

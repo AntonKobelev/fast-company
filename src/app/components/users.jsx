@@ -7,9 +7,13 @@ import api from "../api";
 import SearchStatus from "./searchStatus";
 import UserTable from "./usersTable";
 import _ from "lodash";
+import UserPage from "./userPage";
+// import Loading from "./loading";
 
 // Cоздаем компонент Users - Юзеры и передаем туда свойства т.е. юзеров, а также ...rest - это сбор всех оставшихся аргументов в массив
-const Users = () => {
+const Users = ({ match, history }) => {
+    // получаем userId, т.е. то что мы передали в строку браузера
+    const userId = match.params.userId;
     // создаем хук юзстэйт для хранения состояния текущей страницы и задаем начальное значение 1
     const [currentPage, setCurrentPage] = useState(1);
     // создаем хук юзстейт для хранения профессий, там сейчас ничего нет
@@ -78,93 +82,101 @@ const Users = () => {
         setSortBy(item);
     };
 
-    if (users) {
-        // создаем функцию фильтрация пользователей
-        // фильтруем массив объектов при помощи функции filter, функция обратного вызова принимает user в качестве аргумента и проверяет является ли свойство profession равное значению переменной selectedProf, т.е. ту профессию, которую выбрал пользователь
-        const filteredUsers = selectedProf
-            ? users.filter((user) => user.profession._id === selectedProf._id)
-            : users;
+    if (userId) {
+        return <UserPage userId={userId} history={history} />;
+    } else {
+        if (users) {
+            // создаем функцию фильтрация пользователей
+            // фильтруем массив объектов при помощи функции filter, функция обратного вызова принимает user в качестве аргумента и проверяет является ли свойство profession равное значению переменной selectedProf, т.е. ту профессию, которую выбрал пользователь
+            const filteredUsers = selectedProf
+                ? users.filter(
+                      (user) => user.profession._id === selectedProf._id
+                  )
+                : users;
 
-        //  создаем переменную - длина отфильтрованного списка юзеров
-        const count = filteredUsers.length;
+            //  создаем переменную - длина отфильтрованного списка юзеров
+            const count = filteredUsers.length;
 
-        // создаем переменную - отсортированные пользователи, для сортировки используем библиотеку lodash, 1ый параметр это отфильтрованные пользователи, второй параметр это имя пользователя, третий параметр это сортировка по возрастанию
-        const usersSort = _.orderBy(
-            filteredUsers,
-            [sortBy.path],
-            [sortBy.order]
-        );
+            // создаем переменную - отсортированные пользователи, для сортировки используем библиотеку lodash, 1ый параметр это отфильтрованные пользователи, второй параметр это имя пользователя, третий параметр это сортировка по возрастанию
+            const usersSort = _.orderBy(
+                filteredUsers,
+                [sortBy.path],
+                [sortBy.order]
+            );
 
-        // создаем переменную обрезка пользователей, помещаем туда функцию, куда передаются отфильтрованные пользователи (массив), текущая страница, размер страницы
-        const userCrop = paginate(usersSort, currentPage, pageSize);
+            // создаем переменную обрезка пользователей, помещаем туда функцию, куда передаются отфильтрованные пользователи (массив), текущая страница, размер страницы
+            const userCrop = paginate(usersSort, currentPage, pageSize);
 
-        // создаем переменную очистить фильтр
-        const clearFilter = () => {
-            // сбрасываем выбор профессии на пустое значение
-            setSelectedProf();
-        };
-        //  React-компонент возвращает JSX-разметку
-        return (
-            // создаем общую обертку
-            <div className="d-flex">
-                {professions && (
-                    // создаем обертку для компонента GroupList и кнопки очистить
-                    <div className="d-flex flex-column flex-shrink-0 p-3">
-                        {/* помещаем компонент GroupList и туда передаем пропсы (атрибуты)  */}
-                        <GroupList
-                            // передаем через свойство selectedItem выбранную профессию
-                            selectedItem={selectedProf}
-                            // передаем через свойство item массив профессий
-                            items={professions}
-                            // передаем через свойство onItemSelect функцию handleProfessionSelect, она есть выше
-                            onItemSelect={handleProfessionSelect}
-                        />
-                        {/* создаем кнопку и передаем через атрибут onClick функцию clearFilter, которая определена выше */}
-                        <button
-                            className="btn btn-secondary mt-2"
-                            onClick={clearFilter}
-                        >
-                            Очистить
-                        </button>
-                    </div>
-                )}
-                <div className="d-flex flex-column">
-                    <SearchStatus length={count} />
-                    {/* если count > 0 то создаем таблицу */}
-                    {count > 0 && (
-                        <UserTable
-                            users={userCrop}
-                            onSort={handleSort}
-                            selectedSort = {sortBy}
-                            onToggleBookMark={handleToggleBookMark}
-                            onDelete={handleDelete}
-                        />
+            // создаем переменную очистить фильтр
+            const clearFilter = () => {
+                // сбрасываем выбор профессии на пустое значение
+                setSelectedProf();
+            };
+            //  React-компонент возвращает JSX-разметку
+            return (
+                // создаем общую обертку
+                <div className="d-flex">
+                    {professions && (
+                        // создаем обертку для компонента GroupList и кнопки очистить
+                        <div className="d-flex flex-column flex-shrink-0 p-3">
+                            {/* помещаем компонент GroupList и туда передаем пропсы (атрибуты)  */}
+                            <GroupList
+                                // передаем через свойство selectedItem выбранную профессию
+                                selectedItem={selectedProf}
+                                // передаем через свойство item массив профессий
+                                items={professions}
+                                // передаем через свойство onItemSelect функцию handleProfessionSelect, она есть выше
+                                onItemSelect={handleProfessionSelect}
+                            />
+                            {/* создаем кнопку и передаем через атрибут onClick функцию clearFilter, которая определена выше */}
+                            <button
+                                className="btn btn-secondary mt-2"
+                                onClick={clearFilter}
+                            >
+                                Очистить
+                            </button>
+                        </div>
                     )}
-                    {/* создаем обертку для компонента Пагинация */}
-                    <div className="d-flex justify-content-center">
-                        {/* помещаем туда компонент Пагинация */}
-                        <Pagination
-                            // передаем в компонент пагинация пропсы: через свойство itemsCount передаем длину отфильтрованного списка юзеров
-                            itemsCount={count}
-                            // через свойство pageSize передаем размер страницы
-                            pageSize={pageSize}
-                            // через свойство currentPage передаем номер текущей страницы
-                            currentPage={currentPage}
-                            // через свойство onPageChange передаем функцию handlePageChange
-                            onPageChange={handlePageChange}
-                        />
+                    <div className="d-flex flex-column">
+                        <SearchStatus length={count} />
+                        {/* если count > 0 то создаем таблицу */}
+                        {count > 0 && (
+                            <UserTable
+                                users={userCrop}
+                                onSort={handleSort}
+                                selectedSort={sortBy}
+                                onToggleBookMark={handleToggleBookMark}
+                                onDelete={handleDelete}
+                            />
+                        )}
+                        {/* создаем обертку для компонента Пагинация */}
+                        <div className="d-flex justify-content-center">
+                            {/* помещаем туда компонент Пагинация */}
+                            <Pagination
+                                // передаем в компонент пагинация пропсы: через свойство itemsCount передаем длину отфильтрованного списка юзеров
+                                itemsCount={count}
+                                // через свойство pageSize передаем размер страницы
+                                pageSize={pageSize}
+                                // через свойство currentPage передаем номер текущей страницы
+                                currentPage={currentPage}
+                                // через свойство onPageChange передаем функцию handlePageChange
+                                onPageChange={handlePageChange}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+        }
+        return "loading...";
     }
-    return "loading...";
 };
 
 // с помощью библиотеки prop-types определяем тип свойств (props) передаваемых в компонент Users
 Users.propTypes = {
     // то есть users может быть либо объектом либо массивом
-    users: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    users: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
 // экспортируем компонент Users

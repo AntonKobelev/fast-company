@@ -156,7 +156,17 @@ const fetchAll = () =>
         }, 2000);
     });
 
+// создаем метод для получения пользователя по его id
+const getById = (id) =>
+    // создаем promise - он обещает что вернет ответ
+    new Promise((resolve) => {
+        window.setTimeout(function () {
+            resolve(users.find((user) => user._id === id));
+        }, 1000);
+    });
+
 // экспортируем функцию fetchAll (Извлекаем всех пользователей)
 export default {
-    fetchAll
+    fetchAll,
+    getById
 };
