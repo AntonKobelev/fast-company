@@ -1,9 +1,9 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import Login from "./components/login";
-import Main from "./components/main";
+import Login from "./components/layouts/login";
+import Main from "./components/layouts/main";
 import Menu from "./components/menu";
-import Users from "./components/users";
+import Users from "./components/layouts/users";
 
 // главный компонент приложения App
 function App() {

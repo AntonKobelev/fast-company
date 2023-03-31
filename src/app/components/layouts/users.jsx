@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Pagination from "./pagination";
-import { paginate } from "../utils/paginate";
+import Pagination from "../pagination";
+import { paginate } from "../../utils/paginate";
 import PropTypes from "prop-types";
-import GroupList from "./groupList";
-import api from "../api";
-import SearchStatus from "./searchStatus";
-import UserTable from "./usersTable";
+import GroupList from "../groupList";
+import api from "../../api";
+import SearchStatus from "../searchStatus";
+import UserTable from "../usersTable";
 import _ from "lodash";
-import UserPage from "./userPage";
+import UserPage from "../userPage";
 // import Loading from "./loading";
 
 // Cоздаем компонент Users - Юзеры и передаем туда свойства т.е. юзеров, а также ...rest - это сбор всех оставшихся аргументов в массив
