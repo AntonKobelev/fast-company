@@ -26,7 +26,7 @@ const Users = ({ match, history }) => {
     // создаем хук юзстейт для хранения состояния поиска пользователя
     const [currentInput, setCurrentInput] = useState();
 
-    // создаем переменную pageSize размер страницы, присваиваем размер 2
+    // создаем переменную pageSize размер страницы, присваиваем размер 8
     const pageSize = 8;
 
     // создаем хук useState для хранения состояния users, в качестве начального значения установим значение из index.js, в объекте API вызываем поле users - это user.api.js и из этого файла вызывается функция fetchAll() (извлечь всё - возращаем промис с юзерами)
@@ -70,6 +70,11 @@ const Users = ({ match, history }) => {
         setCurrentPage(1);
     }, [selectedProf]);
 
+    // тут мы делаем юзэффект, при вводе в строку поиска нас перекидывает сразу на первую страницу
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [currentInput]);
+
     // тут мы создаем функцию обработчик выбора профессий, когда пользователь нажал на нужную профессию, запускается функция обработчик выбора профессий, которая принимает в себя аргумент item и при помощи setSelectedProf item устанавливается в состояние компонента selectedProf
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
@@ -100,9 +105,7 @@ const Users = ({ match, history }) => {
                 ? users.filter((user) => user.name.includes(currentInput))
                 : selectedProf
                 ? users.filter(
-                      (user) =>
-                          user.profession._id === selectedProf._id ||
-                          user.name.includes(currentInput)
+                      (user) => user.profession._id === selectedProf._id
                   )
                 : users;
             //  создаем переменную - длина отфильтрованного списка юзеров
