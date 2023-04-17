@@ -8,6 +8,7 @@ import SearchStatus from "../searchStatus";
 import UserTable from "../usersTable";
 import _ from "lodash";
 import UserPage from "../userPage";
+
 // import Loading from "./loading";
 
 // Cоздаем компонент Users - Юзеры и передаем туда свойства т.е. юзеров, а также ...rest - это сбор всех оставшихся аргументов в массив
@@ -22,6 +23,8 @@ const Users = ({ match, history }) => {
     const [selectedProf, setSelectedProf] = useState();
     // создаем хук юзстейт для хранения состояния отсортированного массива пользователей и передаем по умолчанию объект с ключами: сортировка по имени и по возрастанию
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+    // создаем хук юзстейт для хранения состояния поиска пользователя
+    const [currentInput, setCurrentInput] = useState();
 
     // создаем переменную pageSize размер страницы, присваиваем размер 2
     const pageSize = 8;
@@ -82,18 +85,26 @@ const Users = ({ match, history }) => {
         setSortBy(item);
     };
 
+    // создаем обработчик события ввода пользователя в строку поиска
+    const handleInput = (event) => {
+        setCurrentInput(event.target.value);
+    };
+
     if (userId) {
         return <UserPage userId={userId} history={history} />;
     } else {
         if (users) {
             // создаем функцию фильтрация пользователей
             // фильтруем массив объектов при помощи функции filter, функция обратного вызова принимает user в качестве аргумента и проверяет является ли свойство profession равное значению переменной selectedProf, т.е. ту профессию, которую выбрал пользователь
-            const filteredUsers = selectedProf
+            const filteredUsers = currentInput
+                ? users.filter((user) => user.name.includes(currentInput))
+                : selectedProf
                 ? users.filter(
-                      (user) => user.profession._id === selectedProf._id
+                      (user) =>
+                          user.profession._id === selectedProf._id ||
+                          user.name.includes(currentInput)
                   )
                 : users;
-
             //  создаем переменную - длина отфильтрованного списка юзеров
             const count = filteredUsers.length;
 
@@ -139,6 +150,22 @@ const Users = ({ match, history }) => {
                     )}
                     <div className="d-flex flex-column">
                         <SearchStatus length={count} />
+                        <div className="input-group rounded">
+                            <input
+                                type="search"
+                                className="form-control rounded"
+                                placeholder="Search"
+                                aria-label="Search"
+                                aria-describedby="search-addon"
+                                onChange={handleInput}
+                            />
+                            <span
+                                className="input-group-text border-0"
+                                id="search-addon"
+                            >
+                                <i className="fas fa-search"></i>
+                            </span>
+                        </div>
                         {/* если count > 0 то создаем таблицу */}
                         {count > 0 && (
                             <UserTable
