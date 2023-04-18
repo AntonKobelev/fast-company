@@ -78,6 +78,8 @@ const Users = ({ match, history }) => {
     // тут мы создаем функцию обработчик выбора профессий, когда пользователь нажал на нужную профессию, запускается функция обработчик выбора профессий, которая принимает в себя аргумент item и при помощи setSelectedProf item устанавливается в состояние компонента selectedProf
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
+        // очищаем стейт currentInput
+        setCurrentInput("");
     };
 
     // тут создаем функцию обработчик смены страницы, когда пользователь нажал на кнопку смены страницы, запускается функция обработчик смены страницы, которая принимает в себя аргумент pageIndex и происходит обновление состояния currentPage, т.е. устанавливается значение pageIndex. И это приведет к перерисовке компонента и обновлению отображаемых данных.
@@ -161,6 +163,7 @@ const Users = ({ match, history }) => {
                                 aria-label="Search"
                                 aria-describedby="search-addon"
                                 onChange={handleInput}
+                                value={currentInput}
                             />
                             <span
                                 className="input-group-text border-0"
