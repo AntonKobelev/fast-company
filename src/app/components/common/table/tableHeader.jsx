@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Arrows from "./arrows";
+import Arrows from "../arrows";
 
 const TableHeader = ({ onSort, selectedSort, columns }) => {
     // создаем функцию сортировки элементов в столбце и передаем туда аргумент по которому будем сортировать

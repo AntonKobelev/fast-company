@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Pagination from "../pagination";
+import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import PropTypes from "prop-types";
-import GroupList from "../groupList";
+import GroupList from "../common/groupList";
 import api from "../../api";
-import SearchStatus from "../searchStatus";
-import UserTable from "../usersTable";
+import SearchStatus from "../ui/searchStatus";
+import UserTable from "../page/usersTable/userTable";
 import _ from "lodash";
-import UserPage from "../userPage";
+import UserPage from "../page/userPage/userPage";
 
 // import Loading from "./loading";
 

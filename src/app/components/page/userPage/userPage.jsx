@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import api from "../api";
-import QualitiesList from "./qualitiesList";
+import api from "../../../api";
+import QualitiesList from "../../ui/qualities/qualitiesList";
 
 const UserPage = ({ userId, history }) => {
     // создаем хук useState для хранения состояния users, в качестве начального значения установим значение из метода
