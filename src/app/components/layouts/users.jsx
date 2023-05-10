@@ -8,13 +8,17 @@ import SearchStatus from "../ui/searchStatus";
 import UserTable from "../page/usersTable/userTable";
 import _ from "lodash";
 import UserPage from "../page/userPage/userPage";
+import UserChangeForm from "../ui/userChangeForm";
+import { useParams } from "react-router-dom";
+// import UserChangeForm from "../ui/userChangeForm";
 
 // import Loading from "./loading";
 
 // Cоздаем компонент Users - Юзеры и передаем туда свойства т.е. юзеров, а также ...rest - это сбор всех оставшихся аргументов в массив
 const Users = ({ match, history }) => {
-    // получаем userId, т.е. то что мы передали в строку браузера
-    const userId = match.params.userId;
+    // получаем userId и edit, т.е. то что мы передали в строку браузера
+    const { userId, edit } = useParams();
+
     // создаем хук юзстэйт для хранения состояния текущей страницы и задаем начальное значение 1
     const [currentPage, setCurrentPage] = useState(1);
     // создаем хук юзстейт для хранения профессий, там сейчас ничего нет
@@ -97,7 +101,9 @@ const Users = ({ match, history }) => {
         setCurrentInput(event.target.value);
     };
 
-    if (userId) {
+    if (edit && userId) {
+        return <UserChangeForm userId={userId} />;
+    } else if (userId) {
         return <UserPage userId={userId} history={history} />;
     } else {
         if (users) {

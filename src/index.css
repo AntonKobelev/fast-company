@@ -20,6 +20,7 @@ ul {
 
 li {
     display: inline-block;
+    margin-right: 5px;
 }
 
 /* li:last-child {

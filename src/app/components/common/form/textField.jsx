@@ -4,6 +4,12 @@ import PropTypes from "prop-types";
 const TextField = ({ label, type, name, value, onChange, error }) => {
     // создадим состояние для кнопки, которая будет показывать/скрывать пароль
     const [showPassword, setShowPassword] = useState(false);
+
+    // добавим новый метод - мы типизируем все поля чтобы можно было добавлять все поля из любого места
+    const handleChange = ({ target }) => {
+        onChange({ name: [target.name], value: target.value });
+    };
+
     // создадим тогл функцию - переключатель false/true
     const toggleShowPassword = () => {
         setShowPassword((prevState) => !prevState);
@@ -25,7 +31,7 @@ const TextField = ({ label, type, name, value, onChange, error }) => {
                     id={name}
                     name={name}
                     value={value}
-                    onChange={onChange}
+                    onChange={handleChange}
                     className={getInputClasses()}
                 />
                 {/* чтобы обоим полям не назначать кнопку, мы сначала проверим type */}

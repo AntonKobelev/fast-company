@@ -1,20 +1,56 @@
 import React, { useState, useEffect } from "react";
 import TextField from "../common/form/textField";
 import { validator } from "../../utils/validator";
+import CheckBoxField from "../common/form/checkBoxField";
+// import * as yup from "yup";
 
 const LoginForm = () => {
-    const [data, setData] = useState({ email: "", password: "" });
+    const [data, setData] = useState({
+        email: "",
+        password: "",
+        stayOn: false
+    });
     // создаем стейт для хранения ошибок, которые вводит пользователь
     const [errors, setErrors] = useState({});
 
-    const handleChange = ({ target }) => {
-        setData((prevState) => ({ ...prevState, [target.name]: target.value }));
+    const handleChange = (target) => {
+        setData((prevState) => ({
+            ...prevState,
+            [target.name]: target.value
+        }));
     };
 
     // создаем useEffect для отслеживания ввода пользователем текста
     useEffect(() => {
         validate();
     }, [data]);
+
+    // создадим схему валидации для yup
+    // const validateScheme = yup.object().shape({
+    //     password: yup
+    //         .string()
+    //         .required("Пароль обязателен для заполнения")
+    //         .matches(
+    //             /(?=.*[A-Z])/,
+    //             "Пароль должен содержать хотя бы одну заглавную букву"
+    //         )
+    //         .matches(
+    //             /(?=.*[0-9])/,
+    //             "Пароль должен содержать хотя бы одно число"
+    //         )
+    //         .matches(
+    //             /(?=.*[!@#$%^&*])/,
+    //             "Пароль должен содержать хотя бы один из символов !@#$%^&*"
+    //         )
+    //         .matches(
+    //             /(?=.{8,})/,
+    //             "Пароль должен состоять минимум из 8 символов"
+    //         ),
+    //     email: yup
+    //         .string()
+    //         .required("Электронная почта обязательна для заполнения")
+    //         .email("Электронная почта введена не корректно!")
+    // });
 
     // создаем объект конфигурации, согласно которого будем проверять корректность введенных данных
     const validatorConfig = {
@@ -46,6 +82,11 @@ const LoginForm = () => {
     // создаем функцию подтверждение-validate
     const validate = () => {
         const errors = validator(data, validatorConfig);
+        // валидация для yup
+        // validateScheme
+        //     .validate(data)
+        //     .then(() => setErrors({}))
+        //     .catch((err) => setErrors({ [err.path]: err.message }));
         setErrors(errors);
         // true если нет ошибок
         return Object.keys(errors).length === 0;
@@ -61,37 +102,37 @@ const LoginForm = () => {
         console.log(data);
     };
     return (
-        <div className="container mt-5 shadow p-4">
-            <div className="row">
-                <div className="col-md-6 offset-md-3">
-                    <h3 className="mb-4">Login</h3>
-                    <form onSubmit={handleSubmit}>
-                        <TextField
-                            label="Электронная почта"
-                            type="text"
-                            name="email"
-                            value={data.email}
-                            onChange={handleChange}
-                            error={errors.email}
-                        />
-                        <TextField
-                            label="Пароль"
-                            type="password"
-                            name="password"
-                            value={data.password}
-                            onChange={handleChange}
-                            error={errors.password}
-                        />
-                        <button
-                            className="btn btn-primary w-100 mx-auto"
-                            disabled={!isValidate}
-                        >
-                            Submit
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <form onSubmit={handleSubmit}>
+            <TextField
+                label="Электронная почта"
+                type="text"
+                name="email"
+                value={data.email}
+                onChange={handleChange}
+                error={errors.email}
+            />
+            <TextField
+                label="Пароль"
+                type="password"
+                name="password"
+                value={data.password}
+                onChange={handleChange}
+                error={errors.password}
+            />
+            <CheckBoxField
+                value={data.stayOn}
+                onChange={handleChange}
+                name="stayOn"
+            >
+                Оставаться в системе
+            </CheckBoxField>
+            <button
+                className="btn btn-primary w-100 mx-auto"
+                disabled={!isValidate}
+            >
+                Submit
+            </button>
+        </form>
     );
 };
 
