@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import TextField from "../common/form/textField";
-import api from "../../api";
 import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
 // import CheckBoxField from "../common/form/checkBoxField";
 import { validator } from "../../utils/validator";
 import PropTypes from "prop-types";
+import api from "../../api";
+import { useHistory } from "react-router-dom";
 
 const UserChangeForm = ({ userId }) => {
+    const history = useHistory();
     const [data, setData] = useState({
-        name,
+        name: "",
         email: "",
         // password: "",
         profession: "",
@@ -19,7 +21,7 @@ const UserChangeForm = ({ userId }) => {
         // license: false
     });
     // создадим loader
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     // создаем стейт для хранения качеств
     const [qualities, setQualities] = useState([]);
@@ -28,10 +30,41 @@ const UserChangeForm = ({ userId }) => {
     // создаем хук юзстейт для хранения профессий, там сейчас ничего нет
     const [professions, setProfession] = useState();
 
+    const getProfessionById = (id) => {
+        for (const prof of professions) {
+            if (prof.value === id) {
+                return { _id: prof.value, name: prof.label };
+            }
+        }
+    };
+
+    const getQualities = (elements) => {
+        const qualitiesArray = [];
+        for (const elem of elements) {
+            for (const quality in qualities) {
+                if (elem.value === qualities[quality].value) {
+                    qualitiesArray.push({
+                        _id: qualities[quality].value,
+                        name: qualities[quality].label,
+                        color: qualities[quality].color
+                    });
+                }
+            }
+        }
+        return qualitiesArray;
+    };
+
+    const transformData = (data) =>
+        data.map((item) => ({
+            label: item.name,
+            value: item._id,
+            color: item.color
+        }));
+
     // тут мы используем хук useEffect, данный хук вызывает функцию обратного вызова, каждый раз, когда компонент отрисовывается. Хук useEffect используется для получения списка профессий с помощью API и установки полученных данных в переменную professions. Т.е. useEffect будет вызван один раз, так как пустой массив [] не содержит зависимостей.
     useEffect(() => {
         // когда мы начинаем наш запрос мы делаем setLoading в значение true
-        setLoading(true);
+        // setLoading(false);
 
         // обратимся к api и запросим нащего user
         api.users.getById(userId).then((user) => {
@@ -39,7 +72,7 @@ const UserChangeForm = ({ userId }) => {
             setData((prev) => ({
                 ...prev,
                 ...user,
-                professions: user.profession._id,
+                profession: user.profession._id,
                 qualities: transformData(user.qualities)
             }));
         });
@@ -66,13 +99,7 @@ const UserChangeForm = ({ userId }) => {
 
     // делаем useEffect, который будет отслеживать data и ставить loading в значение false
     useEffect(() => {
-        console.log(professions);
-        if (
-            professions &&
-            professions.length > 0 &&
-            qualities.length > 0 &&
-            data._id
-        ) {
+        if (professions && qualities && data._id) {
             console.log("users-update");
             setLoading(false);
         }
@@ -84,11 +111,6 @@ const UserChangeForm = ({ userId }) => {
             [target.name]: target.value
         }));
     };
-
-    // создаем useEffect для отслеживания ввода пользователем текста
-    useEffect(() => {
-        validate();
-    }, [data]);
 
     // создаем объект конфигурации, согласно которого будем проверять корректность введенных данных
     const validatorConfig = {
@@ -128,9 +150,14 @@ const UserChangeForm = ({ userId }) => {
         }
     };
 
+    // создаем useEffect для отслеживания ввода пользователем текста
+    useEffect(() => {
+        validate();
+    }, [data]);
+
     // создаем функцию подтверждение-validate
     const validate = () => {
-        const errors = validator(data, validatorConfig);
+        const errors = validator(data._id, validatorConfig);
         setErrors(errors);
         // true если нет ошибок
         return Object.keys(errors).length === 0;
@@ -144,43 +171,14 @@ const UserChangeForm = ({ userId }) => {
         const isValidate = validate();
         if (!isValidate) return;
         const { profession, qualities } = data;
-        console.log({
-            ...data,
-            profession: getProfessionById(profession),
-            qualities: getQualities(qualities)
-        });
+        api.users
+            .update(userId, {
+                ...data,
+                profession: getProfessionById(profession),
+                qualities: getQualities(qualities)
+            })
+            .then(() => history.goBack());
     };
-
-    const getProfessionById = (id) => {
-        for (const prof of professions) {
-            if (prof.value === id) {
-                return { _id: prof.value, name: prof.label };
-            }
-        }
-    };
-
-    const getQualities = (elements) => {
-        const qualitiesArray = [];
-        for (const elem of elements) {
-            for (const quality in qualities) {
-                if (elem.value === qualities[quality].value) {
-                    qualitiesArray.push({
-                        _id: qualities[quality].value,
-                        name: qualities[quality].label,
-                        color: qualities[quality].color
-                    });
-                }
-            }
-        }
-        return qualitiesArray;
-    };
-
-    const transformData = (data) =>
-        data.map((item) => ({
-            label: item.name,
-            value: item._id,
-            color: item.color
-        }));
 
     return (
         <>
@@ -256,7 +254,7 @@ const UserChangeForm = ({ userId }) => {
     );
 };
 
-// применяем библиотеку prop-types для проверки пропсов, передаваемых в компонент SearchStatus
+// применяем библиотеку prop-types для проверки пропсов, передаваемых в компонент UserChangeForm
 UserChangeForm.propTypes = {
     // свойство userId может быть number
     userId: PropTypes.string
