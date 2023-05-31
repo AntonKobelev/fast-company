@@ -47,9 +47,11 @@ export function validator(data, config) {
 
     // пробегаемся по объекту data и извлекаем оттуда значения полей
     for (const fieldName in data) {
+        // console.log("fieldName", fieldName);
         // получив название поля мы можем его использовать при извлечении метода из файла-конфигурации (к примеру метод isRequired - обязательный, поле заполняемое пользователем не должно быть пустым)
         for (const validateMethod in config[fieldName]) {
             // создаем переменную error, где будем хранить одну ошибку, переменной будет присваиваться результат выполнения вспомогательной функции validate, туда передаем метод, данные пользователя, получаемые через fieldName и конфиг т.е. по сути объект к примеру isRequired - message, потом его вызовем.
+            // console.log("validateMethod", validateMethod);
             const error = validate(
                 validateMethod,
                 data[fieldName],

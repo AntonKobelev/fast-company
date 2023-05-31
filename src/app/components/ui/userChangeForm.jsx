@@ -8,6 +8,7 @@ import { validator } from "../../utils/validator";
 import PropTypes from "prop-types";
 import api from "../../api";
 import { useHistory } from "react-router-dom";
+import BackHistoryButton from "../common/backButton";
 
 const UserChangeForm = ({ userId }) => {
     const history = useHistory();
@@ -183,53 +184,56 @@ const UserChangeForm = ({ userId }) => {
     return (
         <>
             {!loading ? (
-                <div className="container mt-5 shadow p-4 col-md-3 offset-md-4">
+                <div className="conatiner mt-5">
+                    <BackHistoryButton />
                     <div className="row">
-                        <form onSubmit={handleSubmit}>
-                            <TextField
-                                label="Имя"
-                                type="text"
-                                name="name"
-                                value={data.name}
-                                onChange={handleChange}
-                                error={errors.email}
-                            />
-                            <TextField
-                                label="Электронная почта"
-                                type="email"
-                                name="email"
-                                value={data.email}
-                                onChange={handleChange}
-                                error={errors.password}
-                            />
-                            <SelectField
-                                defaultOption="Выберите профессию"
-                                options={professions}
-                                name="profession"
-                                onChange={handleChange}
-                                value={data.profession}
-                                label="Выберите вашу профессию"
-                                error={errors.profession}
-                            />
-                            <RadioField
-                                options={[
-                                    { name: "Male", value: "male" },
-                                    { name: "Female", value: "female" }
-                                ]}
-                                label="Выберите Ваш пол"
-                                value={data.sex}
-                                name="sex"
-                                onChange={handleChange}
-                            />
-                            <MultiSelectField
-                                options={qualities}
-                                onChange={handleChange}
-                                defaultValue={data.qualities}
-                                name="qualities"
-                                label="Выберите Ваши качества"
-                            />
+                        <div className="col-md-6 offset-md-3 shadow p-4 ">
+                            <div className="row">
+                                <form onSubmit={handleSubmit}>
+                                    <TextField
+                                        label="Имя"
+                                        type="text"
+                                        name="name"
+                                        value={data.name}
+                                        onChange={handleChange}
+                                        error={errors.email}
+                                    />
+                                    <TextField
+                                        label="Электронная почта"
+                                        type="email"
+                                        name="email"
+                                        value={data.email}
+                                        onChange={handleChange}
+                                        error={errors.password}
+                                    />
+                                    <SelectField
+                                        defaultOption="Выберите профессию"
+                                        options={professions}
+                                        name="profession"
+                                        onChange={handleChange}
+                                        value={data.profession}
+                                        label="Выберите вашу профессию"
+                                        error={errors.profession}
+                                    />
+                                    <RadioField
+                                        options={[
+                                            { name: "Male", value: "male" },
+                                            { name: "Female", value: "female" }
+                                        ]}
+                                        label="Выберите Ваш пол"
+                                        value={data.sex}
+                                        name="sex"
+                                        onChange={handleChange}
+                                    />
+                                    <MultiSelectField
+                                        options={qualities}
+                                        onChange={handleChange}
+                                        defaultValue={data.qualities}
+                                        name="qualities"
+                                        label="Выберите Ваши качества"
+                                    />
 
-                            {/* <CheckBoxField
+                                    {/* <CheckBoxField
                         value={data.license}
                         onChange={handleChange}
                         name="license"
@@ -237,14 +241,15 @@ const UserChangeForm = ({ userId }) => {
                     >
                         Подтвердить <a>лицензионное соглашение</a>
                     </CheckBoxField> */}
-
-                            <button
-                                className="btn btn-primary w-100 mx-auto"
-                                disabled={!isValidate}
-                            >
-                                Submit
-                            </button>
-                        </form>
+                                    <button
+                                        className="btn btn-primary w-100 mx-auto"
+                                        disabled={!isValidate}
+                                    >
+                                        Submit
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             ) : (
